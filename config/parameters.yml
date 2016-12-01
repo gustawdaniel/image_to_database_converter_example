@@ -2,7 +2,7 @@ config:
   type: mysql
   host: localhost
   user: root
-  pass: null
+  pass: ""
   bases:
    - electronic_store
    - warships
