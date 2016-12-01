@@ -6,7 +6,7 @@ Feature: Selecting chosen fields from database
   Scenario Outline: Checking number of rows
     When I select "SELECT count(*) AS c FROM <table>" from database
     Then I should see 1 results
-    AND Firs result should have "c" equal <count>
+    And Firs result should have "c" equal <count>
 
     Examples:
       | table   | count |

@@ -29,13 +29,16 @@ class FeatureContext extends TestCase implements Context
         parent::__construct();
 
         $this->config = Yaml::parse(file_get_contents(__DIR__.'/../../config/parameters.yml'))["config"];
-//        print_r($this->config);
+        $this->setPdoUsingBaseNumber(0);
+    }
 
+    private function setPdoUsingBaseNumber($baseNumber)
+    {
         try {
             $this->pdo = new PDO(
                 $this->config["type"].
                 ':host='.$this->config["host"].
-                ';dbname='.$this->config["base"],
+                ';dbname='.$this->config["bases"][$baseNumber],
                 $this->config["user"],
                 $this->config["pass"]);
 
@@ -68,6 +71,14 @@ class FeatureContext extends TestCase implements Context
             }
         }
         return true;
+    }
+
+    /**
+     * @Given I connected to :number database
+     */
+    public function connectToSecondDatabase($number)
+    {
+        $this->setPdoUsingBaseNumber($number-1);
     }
 
     /**
