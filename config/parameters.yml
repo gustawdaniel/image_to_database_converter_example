@@ -1,0 +1,6 @@
+config:
+  type: mysql
+  base: electronic_store
+  host: localhost
+  user: root
+  pass: null
