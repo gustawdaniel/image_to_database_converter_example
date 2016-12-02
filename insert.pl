@@ -22,20 +22,34 @@ my $parameters = 'config/parameters.yml';
 my $yaml = YAML::Tiny->read( $parameters );
 my $config = $yaml->[0]->{config};
 
+#--------------------------------------------------------------#
+#         Fix file structure broken by OCR inaccuracy          #
+#--------------------------------------------------------------#
+sub fixStructure
+{
+    s/mm/ram/g;
+    s/\s(\d{3})\s(\d)\s/ $1$2 /g;
+    s/\|\s//g;
+    s/true/1/g;
+    s/false/0/g;
 
-#my %base = (
-#    name => "electronic_store",
-#    user => "root",
-#    pass => "",
-#    host => "localhost"
-#);
+    s/(\w+)\s(\w+)\s(\d{1,2}\/)/$1_$2 $3/g;
+    s/North\s(\w+)/North_$1/g;
+    s/West Virginia/West_Virginia/g;
+    s/South Dakota/South_Dakota/g;
+    s/Royal\s(\w+)/Royal_$1/g;
+    s/New Jersey/New_Jersey/g;
+    s/King George V/King_George_V/g;
+    s/Pearl Harbor/Pearl_Harbor/g;
+    s/Prince of Wales/Prince_of_Wales/g;
+    s/Duke of York/Duke_of_York/g;
+    s/Gt. Britain/Gt._Britain/g;
+    s/\sStrait/_Strait/g;
+};
 
 #----------------------------------------------------------------------#
 #                            Script                                    #
 #----------------------------------------------------------------------#
-
-
-
 
         #--------------------------------------------------------------#
         #                      Loop over databases                     #
@@ -90,29 +104,8 @@ for my $baseName (@{ $config->{"bases"} })
                 if(m/^\s*$/) {
                     next;
                 }
-            #--------------------------------------------------------------#
-            #         Fix file structure broken by OCR inaccuracy          #
-            #--------------------------------------------------------------#
-                {
-                    s/mm/ram/g;
-                    s/\s(\d{3})\s(\d)\s/ $1$2 /g;
-                    s/\|\s//g;
-                    s/true/1/g;
-                    s/false/0/g;
 
-                    s/(\w+)\s(\w+)\s(\d{1,2}\/)/$1_$2 $3/g;
-                    s/North\s(\w+)/North_$1/g;
-                    s/West Virginia/West_Virginia/g;
-                    s/South Dakota/South_Dakota/g;
-                    s/Royal\s(\w+)/Royal_$1/g;
-                    s/New Jersey/New_Jersey/g;
-                    s/King George V/King_George_V/g;
-                    s/Pearl Harbor/Pearl_Harbor/g;
-                    s/Prince of Wales/Prince_of_Wales/g;
-                    s/Duke of York/Duke_of_York/g;
-                    s/Gt. Britain/Gt._Britain/g;
-                    s/\sStrait/_Strait/g;
-                };
+                &fixStructure;
 
                 my @row = split / /;
             #--------------------------------------------------------------#
@@ -124,6 +117,7 @@ for my $baseName (@{ $config->{"bases"} })
                     $statement = $dbh->prepare($query);
                 } else {
                     print "@row\n";
+                    s/_/ / for @row;
                     $statement->execute(@row);
                 }
 

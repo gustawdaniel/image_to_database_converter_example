@@ -74,7 +74,7 @@ class FeatureContext extends TestCase implements Context
     }
 
     /**
-     * @Given I connected to :number database
+     * @Given I'm connected to :number database
      */
     public function connectToSecondDatabase($number)
     {
@@ -133,5 +133,22 @@ class FeatureContext extends TestCase implements Context
             }
         }
     }
+
+    /**
+     * @Then I should see not less than :arg1 results
+     */
+    public function iShouldSeeNotLessThanResults($arg1)
+    {
+        $this->assertGreaterThanOrEqual($arg1,count($this->data));
+    }
+
+    /**
+     * @Then I should see not more than :arg1 results
+     */
+    public function iShouldSeeNotMoreThanResults($arg1)
+    {
+        $this->assertGreaterThanOrEqual(count($this->data),$arg1);
+    }
+
 
 }
